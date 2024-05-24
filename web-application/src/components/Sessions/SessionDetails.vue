@@ -1,5 +1,5 @@
 <template>
-  <div class="col body-spacing">
+  <div class="col body-spacin">
     <div class="row q-gutter-x-s">
       <div class="col">
         <q-scroll-area
@@ -9,7 +9,7 @@
           <div class="col">
             <!-- <div class="row q-col-gutter-md text-h6"> -->
 
-            <q-item dense class="q-px-sm text-h6">
+            <q-item dense class="q-pa-md text-h6">
               <q-item-section class="col-12 col-sm">
                 <q-item-label> Session: {{ sessionState }} </q-item-label>
               </q-item-section>
@@ -18,14 +18,14 @@
                 <q-item-label> Session CCV: {{ sessionCcv }} </q-item-label>
               </q-item-section>
             </q-item>
-            <q-separator spaced />
+            <q-separator />
           </div>
 
-          <!-- {{ sessionMetrics }} -->
+          <!-- {{ sessionMetrics?.IngestFramerate }} -->
 
           <q-card
             class="relative-position full-width"
-            style="height: 360px"
+            style="height: 420px"
             flat
           >
             <q-card-section class="q-pa-none">
@@ -35,8 +35,38 @@
                 leave-active-class="animated fadeOut"
               >
                 <div v-show="metricsLoaded">
-                  <div v-if="sessionMetrics">
-                    <chart-bitrate :metrics="sessionMetrics" />
+                  <div class="col" v-if="sessionMetrics">
+                    <q-tabs
+                      v-model="metricTab"
+                      no-caps
+                      class="text-grey"
+                      active-color="primary"
+                      indicator-color="primary"
+                      align="justify"
+                    >
+                      <q-tab
+                        v-for="(metric, index) in metricTypes"
+                        :key="index"
+                        :name="metric.type"
+                        :label="metric.label"
+                      />
+                    </q-tabs>
+
+                    <q-separator />
+
+                    <q-tab-panels v-model="metricTab" animated>
+                      <q-tab-panel
+                        class="q-pa-none"
+                        :name="metric.type"
+                        v-for="(metric, index) in metricTypes"
+                        :key="index"
+                      >
+                        <chart-bitrate
+                          :metrics="sessionMetrics[metric.type]"
+                          :label="metric.label"
+                        />
+                      </q-tab-panel>
+                    </q-tab-panels>
                   </div>
                 </div>
               </transition>
@@ -49,7 +79,7 @@
               label-style="font-size: 1.1em"
             />
           </q-card>
-          <div class="col">
+          <div class="col q-px-md">
             <div class="row q-col-gutter-md col-12 col-md-4 col-sm-6">
               <div class="col-lg-4 col-md-6 col-sm-12">
                 <list-items type="Channel" :list="sessionDetails?.channel" />
@@ -132,9 +162,19 @@ export default defineComponent({
     const sessionDetails = computed(
       () => sessionStore.sessions[awsRegion]?.[sessionId]
     );
+
     const sessionMetrics = computed(
       () => sessionStore.sessionMetrics[awsRegion]?.[sessionId]
     );
+
+    const metricTypes = [
+      { label: "Ingest Video Bitrate (kbps)", type: "IngestVideoBitrate" },
+      { label: "Ingest Audio Bitrate (kbps)", type: "IngestAudioBitrate" },
+      { label: "Ingest Framerate (fps)", type: "IngestFramerate" },
+      { label: "Keyframe Interval (idr)", type: "KeyframeInterval" },
+      { label: "Concurrent Views (count)", type: "ConcurrentViews" },
+    ];
+
     const limits = computed(() =>
       sessionStore.quotas?.Quotas?.map((quota) => {
         return {
@@ -144,6 +184,7 @@ export default defineComponent({
         };
       })
     );
+
     const sessionState = computed(() =>
       sessionDetails.value?.stream
         ? `${sessionDetails.value?.stream?.state}:${sessionDetails.value?.stream?.health}`
@@ -169,7 +210,7 @@ export default defineComponent({
             .getSession(sessionId, channelArn, awsRegion)
             .then((res) => {
               console.log("getSessionRes:", res);
-              if (res && sessionDetails.value.events?.["Stream End"]) {
+              if (res) {
                 console.log("getting live stream data");
                 sessionStore.getStream(sessionId, channelArn, awsRegion);
               }
@@ -188,7 +229,10 @@ export default defineComponent({
         // }
       }
     });
+
     return {
+      metricTab: ref("IngestVideoBitrate"),
+      metricTypes,
       sessionStore,
       sessionState,
       sessionCcv,

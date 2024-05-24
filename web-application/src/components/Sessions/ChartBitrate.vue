@@ -1,7 +1,9 @@
 <template>
   <!-- {{ option?.series[1]?.data }} -->
+  <!-- {{ Object.values(metrics).map((value) => Math.trunc(value / 1024)) }} -->
+  <!-- {{ option?.series?.data }} -->
   <v-chart
-    v-if="option?.series?.[0].data.length"
+    v-if="option?.series?.data.length"
     class="ivs-bg-grey q-pa-md"
     :option="option"
     autoresize
@@ -9,7 +11,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, onMounted, ref, provide } from "vue";
+import { defineComponent, onMounted, ref, provide } from "vue";
 
 import { date } from "quasar";
 import { use } from "echarts/core";
@@ -25,7 +27,6 @@ import {
 } from "echarts/components";
 
 import VChart, { THEME_KEY } from "vue-echarts";
-// import eventLog from "src/assets/events.json";
 
 use([
   CanvasRenderer,
@@ -40,9 +41,10 @@ use([
 ]);
 
 export default defineComponent({
-  name: "ChannelDetails",
+  name: "MetricsChart",
 
   props: {
+    label: { type: String, default: null },
     metrics: { type: Object, default: null },
   },
 
@@ -52,33 +54,18 @@ export default defineComponent({
     provide(THEME_KEY);
 
     const option = ref({
-      textStyle: {
-        // color: "#fff",
-      },
-      // title: {
-      //   text: "Stacked Line",
-      // },
       tooltip: {
         trigger: "axis",
       },
-      legend: {
-        data: [
-          "Video Bitrate (Kbps)",
-          // "Audio Bitrate",
-          // // "Framerate",
-          // "KeyFrame Intervals",
-          // "Concurrent Views",
-        ],
-        textStyle: {
-          color: "#000",
-        },
-      },
+
       grid: {
-        left: "0%",
-        right: "0%",
-        bottom: "3%",
+        left: "1%",
+        right: "1%",
+        top: "6%",
+        bottom: "15%",
         containLabel: true,
       },
+
       dataZoom: [
         {
           show: true,
@@ -95,16 +82,19 @@ export default defineComponent({
           xAxisIndex: [0, 1],
         },
       ],
-      // toolbox: {
-      //   feature: {
-      //     saveAsImage: {},
-      //   },
-      // },
+
+      toolbox: {
+        // feature: {
+        //   saveAsImage: {},
+        // },
+      },
+
       xAxis: {
         type: "category",
         boundaryGap: true,
         data: [],
       },
+
       yAxis: {
         type: "value",
         // max: "auto",
@@ -114,85 +104,57 @@ export default defineComponent({
           show: true,
         },
       },
-      series: [
-        {
-          name: "Video Bitrate (Kbps)",
-          type: "line",
-          stack: "Total",
-          data: [],
 
-          markPoint: {
-            data: [
-              {
-                name: "test",
-                value: "SS",
-                xAxis: 1,
-                yAxis: -0.5,
-              },
-            ],
-          },
-        },
-        // {
-        //   name: "Audio Bitrate",
-        //   type: "line",
-        //   stack: "Total",
-        //   data: [],
+      series: {
+        name: props.label,
+        type: "line",
+        stack: "Total",
+        data: [],
+
+        // markPoint: {
+        //   data: [
+        //     {
+        //       name: "test",
+        //       value: "SS",
+        //       xAxis: 1,
+        //       yAxis: -0.5,
+        //     },
+        //   ],
         // },
-        // {
-        //   name: "Framerate",
-        //   type: "line",
-        //   stack: "Total",
-        //   data: [],
-        // },
-        // {
-        //   name: "KeyFrame Intervals",
-        //   type: "line",
-        //   stack: "Total",
-        //   data: [],
-        // },
-        // {
-        //   name: "Concurrent Views",
-        //   type: "line",
-        //   stack: "Total",
-        //   data: [],
-        // },
-      ],
+      },
     });
 
     const manipulateMetrics = () => {
-      option.value.xAxis.data = Object.keys(
-        props.metrics?.IngestVideoBitrate
-      ).map((key) => date.formatDate(parseInt(key) * 1000, "hh:mm:ss"));
-      option.value.series[0].data = Object.values(
-        props.metrics?.IngestVideoBitrate
-      ).map((value) => Math.trunc(value / 1024));
-      // option.value.series[1].data = Object.values(
-      //   props.metrics?.IngestAudioBitrate
-      // ).map((value) => Math.trunc(value / 1024));
-      // option.value.series[2].data = Object.values(
-      //   props.metrics?.KeyframeInterval
-      // );
-      // option.value.series[3].data = Object.values(
-      //   props.metrics?.ConcurrentViews
-      // );
-    };
+      option.value.xAxis.data = Object.keys(props.metrics).map((key) =>
+        date.formatDate(parseInt(key) * 1000, "hh:mm:ss")
+      );
 
-    const setMetricsData = () => {
-      switch (props.metrics) {
-        case "IngestVideoBitrate":
-          manipulateMetrics();
-        // case "IngestAudioBitrate":
-        //   option.value.series[1].data.push(event.avgValue / 1024);
-        // // case "IngestFramerate":
-        // //   option.value.series[2].data.push(event.avgValue / 1024);
-        // case "KeyframeInterval":
-        //   option.value.series[3].data.push(event.avgValue / 1024);
-        // case "ConcurrentViews":
-        //   option.value.series[4].data.push(event.avgValue);
-
-        default:
-          break;
+      if (props.label == "Ingest Video Bitrate (kbps)") {
+        option.value.series.data = Object.values(props.metrics).map((value) =>
+          Math.trunc(value / 1024)
+        );
       }
+      if (props.label == "Ingest Audio Bitrate (kbps)") {
+        option.value.series.data = Object.values(props.metrics).map((value) =>
+          Math.trunc(value / 1024)
+        );
+      }
+      if (props.label == "Ingest Framerate (fps)") {
+        option.value.series.data = Object.values(props.metrics).map((value) =>
+          Math.trunc(value)
+        );
+      }
+      if (props.label == "Keyframe Interval (idr)") {
+        option.value.series.data = Object.values(props.metrics).map((value) =>
+          Math.trunc(value)
+        );
+      }
+      if (props.label == "Concurrent Views (count)") {
+        option.value.series.data = Object.values(props.metrics).map((value) =>
+          Math.trunc(value)
+        );
+      }
+      // }
     };
 
     onMounted(() => {

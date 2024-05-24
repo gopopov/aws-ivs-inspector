@@ -8,10 +8,10 @@ export const useCommonStore = defineStore("CommonStore", {
     regions: envVars.VITE_IVS_REGIONS.split(","),
     thumbStyle: {
       right: "0px",
-      borderRadius: "7px",
+      borderRadius: "6px",
       backgroundColor: "#ff6f00",
-      width: "4px",
-      opacity: 0.75,
+      width: "2px",
+      opacity: 1,
     },
 
     initialPagination: {

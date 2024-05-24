@@ -168,7 +168,7 @@ export const useSessionStore = defineStore("SessionStore", {
           }
         );
 
-        console.log(response);
+        // console.log(response);
 
         if (response.status == 200) {
           if (!this.sessionMetrics[ivsRegion])
@@ -253,12 +253,12 @@ export const useSessionStore = defineStore("SessionStore", {
             if (stream.data.length) {
               const streamData = JSON.parse(stream.data);
               const streamId = streamData.detail.stream_id;
-              const action = streamData.detail.event_name;
+              const event = streamData.detail.event_name;
               const channelId = streamData.resources[0].split("/")[1];
 
-              // console.log("this.liveSessions", this.liveSessions, action);
+              console.log("stream.data", this.liveSessions, event);
 
-              if (action == "Session Created") {
+              if (event == "Session Created") {
                 console.log("session created, adding to the local store");
                 const sessionState = {
                   channelArn: streamData.resources[0],
@@ -283,7 +283,7 @@ export const useSessionStore = defineStore("SessionStore", {
                   sessionState;
 
                 console.log("live sessions: ", this.liveSessions[ivsRegion]);
-              } else if (action == "Session Ended") {
+              } else if (event == "Session Ended") {
                 console.log("session ended, removing from the local store");
                 // console.log(this.liveSessions[ivsRegion][channelId]);
                 delete this.liveSessions[ivsRegion][channelId];
