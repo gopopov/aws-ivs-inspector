@@ -21,64 +21,65 @@
             <q-separator />
           </div>
 
-          <!-- {{ sessionMetrics?.IngestFramerate }} -->
-
-          <q-card
-            class="relative-position full-width"
-            style="height: 420px"
-            flat
-          >
-            <q-card-section class="q-pa-none">
-              <transition
-                appear
-                enter-active-class="animated jumpUp"
-                leave-active-class="animated fadeOut"
-              >
-                <div v-show="metricsLoaded">
-                  <div class="col" v-if="sessionMetrics">
-                    <q-tabs
-                      v-model="metricTab"
-                      no-caps
-                      class="text-grey"
-                      active-color="primary"
-                      indicator-color="primary"
-                      align="justify"
-                    >
-                      <q-tab
-                        v-for="(metric, index) in metricTypes"
-                        :key="index"
-                        :name="metric.type"
-                        :label="metric.label"
-                      />
-                    </q-tabs>
-
-                    <q-separator />
-
-                    <q-tab-panels v-model="metricTab" animated>
-                      <q-tab-panel
-                        class="q-pa-none"
-                        :name="metric.type"
-                        v-for="(metric, index) in metricTypes"
-                        :key="index"
+          <div class="col">
+            <q-card
+              class="relative-position full-width"
+              style="height: 420px"
+              flat
+            >
+              <q-card-section v-if="metricsLoaded" class="q-pa-none">
+                <transition
+                  appear
+                  enter-active-class="animated jumpUp"
+                  leave-active-class="animated fadeOut"
+                >
+                  <div v-show="metricsLoaded">
+                    <div class="col" v-if="sessionMetrics">
+                      <q-tabs
+                        v-model="metricTab"
+                        no-caps
+                        class="text-grey"
+                        active-color="primary"
+                        indicator-color="primary"
+                        align="justify"
                       >
-                        <chart-bitrate
-                          :metrics="sessionMetrics[metric.type]"
+                        <q-tab
+                          v-for="(metric, index) in metricTypes"
+                          :key="index"
+                          :name="metric.type"
                           :label="metric.label"
                         />
-                      </q-tab-panel>
-                    </q-tab-panels>
-                  </div>
-                </div>
-              </transition>
-            </q-card-section>
+                      </q-tabs>
 
-            <q-inner-loading
-              :showing="!metricsLoaded"
-              label="Loading Metrics..."
-              label-class="text-teal"
-              label-style="font-size: 1.1em"
-            />
-          </q-card>
+                      <q-separator />
+
+                      <q-tab-panels v-model="metricTab" animated>
+                        <q-tab-panel
+                          class="q-pa-none"
+                          :name="metric.type"
+                          v-for="(metric, index) in metricTypes"
+                          :key="index"
+                        >
+                          <chart-bitrate
+                            :metrics="sessionMetrics[metric.type]"
+                            :label="metric.label"
+                          />
+                        </q-tab-panel>
+                      </q-tab-panels>
+                    </div>
+                  </div>
+                </transition>
+              </q-card-section>
+
+              <q-inner-loading
+                v-else
+                label="Loading Metrics..."
+                label-class="text-teal"
+                label-style="font-size: 1.1em"
+              />
+            </q-card>
+          </div>
+
           <div class="col q-px-md">
             <div class="row q-col-gutter-md col-12 col-md-4 col-sm-6">
               <div class="col-lg-4 col-md-6 col-sm-12">
@@ -227,7 +228,7 @@ export default defineComponent({
         // if (!limits.value) {
         //   sessionStore.getQuotaProvisioned("ivs", awsRegion);
         // }
-      }
+      } else metricsLoaded.value = true;
     });
 
     return {
