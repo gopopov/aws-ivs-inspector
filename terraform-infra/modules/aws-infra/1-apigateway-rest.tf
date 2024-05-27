@@ -78,8 +78,8 @@ resource "aws_api_gateway_deployment" "deployment" {
   lifecycle {
     create_before_destroy = true
   }
-
-  stage_description = md5(file("1-apigateway-rest.tf"))
+  description = "Deployed at ${timestamp()}"
+  # stage_description = "${md5(file("1-apigateway-rest.tf"))}"
 
   depends_on = [
     aws_api_gateway_method.method,
