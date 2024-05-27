@@ -1,69 +1,268 @@
 <template>
-  <div class="col body-spacing">
-    <!-- {{ accountStore.accountQuotas }} -->
+  <div class="col q-gutter-sm body-spacing">
+    <div class="col">
+      <div class="row q-gutter-sm col-12 col-md">
+        <div class="column col box-decorator">
+          <div class="col-auto q-pa-md text-h6">
+            <q-item-label class="text-body1"> Live Streams </q-item-label>
+            <q-item-label caption> current </q-item-label>
+          </div>
+
+          <div class="col q-py-lg text-center">
+            <q-item-label class="value-text"> 100+ </q-item-label>
+          </div>
+        </div>
+
+        <div class="column col box-decorator">
+          <div class="col-auto q-pa-md text-h6">
+            <q-item-label class="text-body1"> Concurrent Views </q-item-label>
+            <q-item-label caption> current </q-item-label>
+          </div>
+
+          <div class="col q-py-lg text-center">
+            <q-item-label class="value-text text-negative">
+              14233
+            </q-item-label>
+          </div>
+        </div>
+
+        <div class="column col box-decorator">
+          <div class="col-auto q-pa-md text-h6">
+            <q-item-label class="text-body1">
+              Live Delivered Time
+            </q-item-label>
+            <q-item-label caption> May 2024 </q-item-label>
+          </div>
+
+          <div class="col q-py-lg text-center">
+            <q-item-label class="value-text" lines="1"> 17868 </q-item-label>
+          </div>
+        </div>
+
+        <div class="column col box-decorator">
+          <div class="col-auto q-pa-md text-h6">
+            <q-item-label class="text-body1"> Live Input Time </q-item-label>
+            <q-item-label caption> May 2024 </q-item-label>
+          </div>
+
+          <div class="col q-py-lg text-center">
+            <q-item-label class="value-text"> 30 </q-item-label>
+          </div>
+        </div>
+
+        <div class="column col box-decorator">
+          <div class="col-auto q-pa-md text-h6">
+            <q-item-label class="text-body1"> Recorded Time </q-item-label>
+            <q-item-label caption> May 2024 </q-item-label>
+          </div>
+
+          <div class="col q-py-lg text-center">
+            <q-item-label class="value-text"> 22 </q-item-label>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="col">
-      <div class="col">
-        <q-item dense class="q-px-sm text-h6">
-          <q-item-section>
-            <q-item-label class="text-h6"> Quotas Provisioned </q-item-label>
-          </q-item-section>
-        </q-item>
+      <div class="row q-gutter-sm col-12 col-md">
+        <q-list class="col box-decorator">
+          <q-item dense class="q-pa-md text-h6">
+            <q-item-section>
+              <q-item-label class="text-body1">
+                Concurrent Streams
+              </q-item-label>
+            </q-item-section>
+
+            <q-item-section side>
+              <q-item-label class="text-body1 text-primary">
+                24hrs
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <chart-usage-metrics
+            :metrics="concurrentStreams"
+            label="Concurrent Streams"
+          />
+        </q-list>
+
+        <q-list class="col box-decorator">
+          <q-item dense class="q-pa-md text-h6">
+            <q-item-section>
+              <q-item-label class="text-body1">
+                Concurrent Viewers
+              </q-item-label>
+            </q-item-section>
+
+            <q-item-section side>
+              <q-item-label class="text-body1 text-primary">
+                24hrs
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+
+          <chart-usage-metrics
+            :metrics="concurrentStreams"
+            label="Concurrent Viewers"
+          />
+        </q-list>
       </div>
-      <q-separator spaced />
+    </div>
 
-      <div class="flex q-gutter-sm">
-        <q-item
-          v-for="(quota, index) in quotasProvisioned"
-          :key="index"
-          class="bg-grey-2 q-pa-none border"
+    <div class="col">
+      <div class="row q-gutter-sm col-12 col-md">
+        <div
+          v-if="quotasLowLatency?.length"
+          class="col q-gutter-y-sm box-decorator"
         >
-          <q-item-section class="q-pa-md">
-            <q-item-label lines="1" class="text-primary">
-              {{ quota.QuotaName }}
+          <div class="col-auto q-pa-md text-h6">
+            <q-item-label class="text-body1">
+              Quotas: Low Latency
             </q-item-label>
-          </q-item-section>
+          </div>
 
-          <q-item-section class="col-auto q-py-md q-px-lg text-body1 bg-white">
-            <q-item-label>
-              {{ quota.Value }}
-            </q-item-label>
-          </q-item-section>
-        </q-item>
+          <q-table
+            class="bg-transparent"
+            flat
+            :rows="quotasLowLatency"
+            :columns="columns"
+            row-key="QuotaName"
+            hide-header
+            hide-bottom
+          />
+        </div>
+
+        <div
+          v-if="quotasStages?.length"
+          class="col q-gutter-y-sm box-decorator"
+        >
+          <div class="col-auto q-pa-md text-h6">
+            <q-item-label class="text-body1"> Quotas: Stages </q-item-label>
+          </div>
+
+          <q-table
+            class="bg-transparent"
+            flat
+            :rows="quotasStages"
+            :columns="columns"
+            row-key="QuotaName"
+            hide-header
+            hide-bottom
+            :pagination="initialPagination"
+          />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { useAccountStore } from "src/stores/store-account";
 import { computed, defineComponent, onMounted, ref } from "vue";
+import { useAccountStore } from "src/stores/store-account";
+import { useCommonStore } from "src/stores/store-common";
 import { useRoute } from "vue-router";
+import ChartUsageMetrics from "src/components/Charts/ChartUsageMetrics.vue";
 
 export default defineComponent({
   name: "DashBoard",
 
   setup() {
+    const commonStore = useCommonStore();
     const accountStore = useAccountStore();
     const $route = useRoute();
     const ivsRegion = $route.params.region;
+
+    const concurrentStreams = computed(
+      () => accountStore.metrics.ConcurrentStreams
+    );
 
     const quotasProvisioned = computed(
       () => accountStore.accountQuotas[ivsRegion]
     );
 
+    const quotasLowLatencyKeys = [
+      "Channels",
+      "Concurrent streams",
+      "Concurrent views",
+      "Playback restriction policies",
+      "Recording configurations",
+    ];
+
+    const quotasStagesKeys = [
+      "Stages",
+      "Stream Key",
+      "Total number of Destinations per Composition",
+      "Compositions",
+      "Stage participants (subscribers)",
+      "Stage participants (publishers)",
+      "Max Composition duration",
+      "Storage configurations",
+      "Encoder configurations",
+    ];
+
+    const quotasLowLatency = computed(() =>
+      quotasProvisioned?.value?.filter((quota) =>
+        quotasLowLatencyKeys.includes(quota.QuotaName)
+      )
+    );
+
+    const quotasStages = computed(() =>
+      quotasProvisioned?.value?.filter((quota) =>
+        quotasStagesKeys.includes(quota.QuotaName)
+      )
+    );
+
+    const columns = [
+      {
+        name: "QuotaName",
+        required: true,
+        label: "Quota Name",
+        align: "left",
+        field: (row) => row.QuotaName,
+        format: (val) => `${val}`,
+        sortable: true,
+      },
+      {
+        name: "Value",
+        required: true,
+        label: "Provisioned",
+        align: "right",
+        field: (row) => row.Value,
+        format: (val) => `${val}`,
+        sortable: true,
+      },
+    ];
+
     onMounted(() => {
       if (!quotasProvisioned.value?.length) {
         accountStore.getQuotaProvisioned("ivs", ivsRegion);
       }
+
+      accountStore.getMetrics(ivsRegion);
     });
 
     return {
+      concurrentStreams,
       quotasProvisioned,
       accountStore,
+      quotasLowLatency,
+      quotasStages,
+      columns,
+      initialPagination: commonStore.initialPagination,
     };
   },
 
-  components: {},
+  components: { ChartUsageMetrics },
 });
 </script>
+
+<style lang="sass">
+.box-decorator
+  background-color: $grey-2
+  border: 1px solid #ff9900
+
+.value-text
+  font-size: 4vw
+  font-weight: 400
+  color: $grey-8
+</style>

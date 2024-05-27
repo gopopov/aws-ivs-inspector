@@ -85,6 +85,10 @@ variable "rest_apis" {
 
   default = [
     {
+      name        = "get-metrics"
+      http_method = "GET"
+    },
+    {
       name        = "list-channels"
       http_method = "GET"
     },
@@ -171,6 +175,10 @@ variable "lambdas" {
 
   default = [
     {
+      name    = "get-metrics"
+      timeout = 120
+    },
+    {
       name    = "list-channels"
       timeout = 120
     },
@@ -237,6 +245,10 @@ variable "assume_roles" {
   }))
 
   default = [
+    {
+      name        = "get-metrics"
+      assume_role = ["lambda.amazonaws.com"]
+    },
     {
       name        = "list-channels"
       assume_role = ["lambda.amazonaws.com"]

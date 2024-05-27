@@ -12,8 +12,24 @@
       </div>
       <q-separator />
     </div>
+
     <q-list separator class="ivs-bg-grey">
-      <q-item v-for="(value, key) in list" :key="key">
+      <q-item
+        v-for="(value, key) in list"
+        :key="key"
+        :clickable="value.name.includes('Starvation')"
+        @click="$emit('showEventReason', value.name)"
+      >
+        <q-item-section side v-if="value.name.includes('Starvation')">
+          <q-btn
+            icon="o_info"
+            round
+            padding="none"
+            unelevated
+            :color="value.name.includes('Start') ? 'red' : 'green'"
+          />
+        </q-item-section>
+
         <q-item-section side>
           <q-item-label> {{ value.name }}: </q-item-label>
         </q-item-section>

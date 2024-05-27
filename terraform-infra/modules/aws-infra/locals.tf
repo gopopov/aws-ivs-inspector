@@ -12,6 +12,30 @@ locals {
 
   policies = [
     {
+      name = "get-metrics"
+      statements = [
+        {
+          effect = "Allow"
+          actions = [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+          ]
+          resources = ["arn:aws:logs:${var.region}:${var.account_id}:log-group:*"]
+        },
+        {
+          effect = "Allow"
+          actions = [
+            # "cloudwatch:GetMetricData",
+            "cloudwatch:GetMetricStatistics",
+            # "cloudwatch:ListMetrics",
+          ],
+
+          resources = ["*"]
+        }
+      ]
+    },
+    {
       name = "list-channels"
       statements = [
         {
@@ -155,14 +179,9 @@ locals {
         {
           effect = "Allow"
           actions = [
-            # "dynamodb:DeleteItem",
             "dynamodb:GetItem",
-            # "dynamodb:PutItem",
-            # "dynamodb:Scan",
-            # "dynamodb:UpdateItem"
           ]
           resources = [
-            # "arn:aws:dynamodb:${var.region}:${var.account_id}:table/${var.project_name}-stream-sessions/index/index_name",
             "arn:aws:dynamodb:${var.region}:${var.account_id}:table/${var.project_name}-stream-sessions"
           ]
         }

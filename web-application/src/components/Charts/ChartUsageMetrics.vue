@@ -1,7 +1,4 @@
 <template>
-  <!-- {{ option?.series[1]?.data }} -->
-  <!-- {{ Object.values(metrics).map((value) => Math.trunc(value / 1024)) }} -->
-  <!-- {{ option?.series?.data }} -->
   <v-chart
     v-if="option?.series?.data.length"
     class="ivs-bg-grey q-pa-md"
@@ -11,12 +8,12 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, provide } from "vue";
+import { defineComponent, onMounted, ref, provide, computed } from "vue";
 
 import { date } from "quasar";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
-import { PieChart, LineChart } from "echarts/charts";
+import { BarChart } from "echarts/charts";
 import {
   TitleComponent,
   TooltipComponent,
@@ -30,8 +27,7 @@ import VChart, { THEME_KEY } from "vue-echarts";
 
 use([
   CanvasRenderer,
-  PieChart,
-  LineChart,
+  BarChart,
   GridComponent,
   TitleComponent,
   TooltipComponent,
@@ -41,11 +37,11 @@ use([
 ]);
 
 export default defineComponent({
-  name: "MetricsChart",
+  name: "UsageMetricsChart",
 
   props: {
     label: { type: String, default: null },
-    metrics: { type: Object, default: null },
+    metrics: { type: Array, default: null },
   },
 
   components: { VChart },
@@ -56,13 +52,16 @@ export default defineComponent({
     const option = ref({
       tooltip: {
         trigger: "axis",
+        axisPointer: {
+          type: "shadow",
+        },
       },
 
       grid: {
-        left: "1%",
-        right: "1%",
-        top: "6%",
-        bottom: "15%",
+        left: "3%",
+        right: "3%",
+        top: "10%",
+        bottom: "25%",
         containLabel: true,
       },
 
@@ -96,65 +95,31 @@ export default defineComponent({
       },
 
       yAxis: {
-        type: "value",
-        // max: "auto",
-        // min: "auto",
-        boundaryGap: [0, "100%"],
-        splitLine: {
-          show: true,
-        },
+        min: null,
+        max: null,
       },
 
       series: {
         name: props.label,
-        type: "line",
+        type: "bar",
         stack: "Total",
         data: [],
-
-        // markPoint: {
-        //   data: [
-        //     {
-        //       name: "test",
-        //       value: "SS",
-        //       xAxis: 1,
-        //       yAxis: -0.5,
-        //     },
-        //   ],
-        // },
       },
     });
 
-    const manipulateMetrics = () => {
-      option.value.xAxis.data = Object.keys(props.metrics).map((key) =>
-        date.formatDate(parseInt(key) * 1000, "hh:mm:ss")
-      );
+    const metrics = props.metrics;
 
-      if (props.label == "Ingest Video Bitrate (kbps)") {
-        option.value.series.data = Object.values(props.metrics).map((value) =>
-          Math.trunc(value / 1024)
-        );
-      }
-      if (props.label == "Ingest Audio Bitrate (kbps)") {
-        option.value.series.data = Object.values(props.metrics).map((value) =>
-          Math.trunc(value / 1024)
-        );
-      }
-      if (props.label == "Ingest Framerate (fps)") {
-        option.value.series.data = Object.values(props.metrics).map((value) =>
-          Math.trunc(value)
-        );
-      }
-      if (props.label == "Keyframe Interval (idr)") {
-        option.value.series.data = Object.values(props.metrics).map((value) =>
-          Math.trunc(value)
-        );
-      }
-      if (props.label == "Concurrent Views (count)") {
-        option.value.series.data = Object.values(props.metrics).map((value) =>
-          Math.trunc(value)
-        );
-      }
-      // }
+    const manipulateMetrics = () => {
+      option.value.xAxis.data = metrics
+        .sort(
+          (x, y) =>
+            new Date(x.Timestamp).getTime() - new Date(y.Timestamp).getTime()
+        )
+        .map((data) => date.formatDate(data.Timestamp, "hh:mm:ss"));
+
+      option.value.series.data = metrics.map((data) => data.Average);
+      option.value.yAxis.min = Math.min(...option.value.series.data);
+      option.value.yAxis.max = Math.max(...option.value.series.data);
     };
 
     onMounted(() => {
@@ -169,12 +134,12 @@ export default defineComponent({
 <style scoped>
 .echarts {
   width: 100%;
-  height: 360px;
+  height: 200px;
   margin: auto auto;
 }
 .echart {
   width: 100%;
-  height: 360px;
+  height: 200px;
   /* border: 1px solid #cfcfcf; */
 }
 h1,

@@ -1,8 +1,8 @@
 import ast
 import os
 import json
-import boto3
-import botocore.exceptions as exceptions
+import boto3 # type: ignore
+import botocore.exceptions as exceptions # type: ignore
 import logging
 from time import sleep
 from datetime import datetime, timedelta

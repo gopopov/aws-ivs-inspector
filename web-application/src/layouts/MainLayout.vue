@@ -141,7 +141,6 @@ import { useAuthStore } from "src/stores/store-auth";
 import { useAuthenticator } from "@aws-amplify/ui-vue";
 
 import Navigation from "src/components/HomeComponents/Navigation.vue";
-import envVars from "src/config/env.json";
 
 export default defineComponent({
   name: "MainLayout",
@@ -154,8 +153,8 @@ export default defineComponent({
     const authStore = useAuthStore();
     const accountStore = useAccountStore();
     const commonStore = useCommonStore();
-    // const auth = useAuthenticator();
-    const { route, user, signOut, auth } = toRefs(useAuthenticator());
+    const user = computed(() => authStore.user);
+    // const { route, signOut, auth } = toRefs(useAuthenticator());
 
     const navigationList = computed(() => [
       {
@@ -221,50 +220,41 @@ export default defineComponent({
     };
 
     const signOutAndRedirectTo = () => {
-      signOut.value();
-      $router.push({ name: "Auth" });
+      authStore
+        .userSignOut()
+        .then((userSignOutRes) => console.log(userSignOutRes));
     };
 
     watch(user, (current, old) => {
       console.log("user old:", old);
       console.log("user current:", current);
-      console.log("route:", route.value);
-      // console.log("route:", $route);
-      if (route.value == "signIn") {
-        $router.push({ name: "Auth", redirect: { name: $route.name } });
-      }
-    });
-
-    watch(route, (current, old) => {
-      console.log("route old:", old);
-      console.log("route current:", current);
-      // if (current == "signOut") {
-      //   $router.push({
-      //     name: "Auth",
-      //     redirect: { name: "Dashboard" },
-      //   });
+      // if (current == "signIn") {
+      //   $router.push({ name: "Auth", redirect: { name: $route.name } });
       // }
     });
 
-    // onMounted(() => {
-    //   // console.log("user State at auth:", user.value);
-    //   // console.log("user State at store:", authStore.userState);
-    //   if (!authStore.userState) {
-    //     // console.log("user State is null");
-    //     console.log("route:", route);
-    //     console.log("route:", $route);
-    //     // $router.push({
-    //     //   name: "Auth",
-    //     //   redirect: { name: "Dashboard" },
-    //     // });
-    //   }
-    // });
+    onMounted(() => {
+      authStore.isUserSignedIn().then((res) => console.log(res));
+
+      // authStore.isUserSignedIn();
+      //   // console.log("user State at auth:", user.value);
+      //   // console.log("user State at store:", authStore.userState);
+      //   if (!authStore.userState) {
+      //     // console.log("user State is null");
+      //     console.log("route:", route);
+      //     console.log("route:", $route);
+      //     // $router.push({
+      //     //   name: "Auth",
+      //     //   redirect: { name: "Dashboard" },
+      //     // });
+      //   }
+    });
 
     return {
-      auth,
+      // auth,
       user,
-      route,
-      signOut,
+      // route,
+      // signOut,
       navigation: navigationList,
       miniState: ref(true),
       drawer,

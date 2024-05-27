@@ -2,8 +2,25 @@ const routes = [
   {
     name: "Auth",
     path: "/auth",
-    component: () => import("src/pages/Auth.vue"),
+    component: () => import("src/pages/UserLogin.vue"),
   },
+
+  // {
+  //   path: "/login",
+  //   component: () => import("pages/Login.vue")
+  // },
+  // {
+  //   path: "/forgot_password",
+  //   component: () => import("pages/ForgotPassword.vue")
+  // },
+  // {
+  //   path: "/reset_password",
+  //   component: () => import("pages/ResetPassword.vue")
+  // },
+  // {
+  //   path: "/register",
+  //   component: () => import("pages/Register.vue")
+  // },
 
   {
     name: "MainLayout",

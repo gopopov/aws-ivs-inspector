@@ -9,10 +9,16 @@ import routes from "./routes";
 
 // - AMPLIFY -
 import { Amplify } from "aws-amplify";
-import { fetchUserAttributes } from "aws-amplify/auth";
-import { fetchAuthSession } from "aws-amplify/auth";
+import { fetchUserAttributes, fetchAuthSession } from "aws-amplify/auth";
 import { AmplifyConfig } from "../config/amplify-config"; // NO TOUCHY
 Amplify.configure(AmplifyConfig);
+
+console.log(Amplify.getConfig());
+
+// fetchUserAttributes().then((res) =>
+//   console.log("fetch User Attributes: ", res)
+// );
+// fetchAuthSession().then((res) => console.log("fetch auth session: ", res));
 
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER

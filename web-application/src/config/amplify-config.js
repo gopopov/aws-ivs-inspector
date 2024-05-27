@@ -1,9 +1,5 @@
 // -- AWS AMPLIFY CONFIGURATION PARAMETERS --
-import { Amplify } from "aws-amplify";
-// console.log("env", import.meta.env);
-// console.log("userpoolid", import.meta.env.VITE_USER_POOL_ID);
 const AmplifyConfig = {
-  // Existing Auth
   Auth: {
     Cognito: {
       userPoolClientId: import.meta.env.VITE_APP_CLIENT_ID,
@@ -15,7 +11,7 @@ const AmplifyConfig = {
       allowGuestAccess: false,
       signUpVerificationMethod: "code", // 'code' | 'link'
       loginWith: {
-        username: "true",
+        username: "false",
         email: "true", // Optional
         phone: "false", // Optional
       },

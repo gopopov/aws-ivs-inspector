@@ -50,7 +50,7 @@
 import { defineComponent, computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useSessionStore } from "src/stores/store-session";
-import ChartBitrate from "src/components/Sessions/ChartBitrate.vue";
+import ChartBitrate from "src/components/Charts/ChartIngestMetrics.vue";
 import ListItems from "src/components/Common/ListItems.vue";
 import ListItemsQuotas from "src/components/Common/ListItemsQuotas.vue";
 
