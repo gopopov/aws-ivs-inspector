@@ -31,7 +31,9 @@
       </div>
     </div>
 
-    <div class="col">
+    <!-- {{ concurrentStreams }}
+    {{ accountStore.metrics?.[ivsRegion]?.[1]["Datapoints"] }} -->
+    <div class="col" v-if="metrics">
       <div class="row q-gutter-sm col-12 col-md">
         <q-list class="col box-decorator">
           <q-item dense class="q-pa-md text-h6">
@@ -49,7 +51,7 @@
           </q-item>
 
           <chart-usage-metrics
-            :metrics="concurrentStreams"
+            :metrics="accountStore.metrics?.[ivsRegion]?.[1]['Datapoints']"
             label="Concurrent Streams"
           />
         </q-list>
@@ -57,9 +59,7 @@
         <q-list class="col box-decorator">
           <q-item dense class="q-pa-md text-h6">
             <q-item-section>
-              <q-item-label class="text-body1">
-                Concurrent Viewers
-              </q-item-label>
+              <q-item-label class="text-body1"> Concurrent Views </q-item-label>
             </q-item-section>
 
             <q-item-section side>
@@ -70,8 +70,8 @@
           </q-item>
 
           <chart-usage-metrics
-            :metrics="concurrentStreams"
-            label="Concurrent Viewers"
+            :metrics="accountStore.metrics?.[ivsRegion]?.[0]['Datapoints']"
+            label="Concurrent Views"
           />
         </q-list>
       </div>
@@ -140,29 +140,33 @@ export default defineComponent({
     const $route = useRoute();
     const ivsRegion = $route.params.region;
 
+    const concurrentViews = computed(
+      () => accountStore.metrics?.[ivsRegion]?.[0]["Datapoints"]
+    );
+
+    const concurrentStreams = computed(
+      () => accountStore.metrics?.[ivsRegion]?.[1]["Datapoints"]
+    );
+
     const metrics = computed(() => {
       var metricsManipulation = accountStore.metrics[ivsRegion];
       console.log(metricsManipulation);
-      const ConcurrentViews = metricsManipulation?.[0]?.["Datapoints"].sort(
-        (x, y) =>
-          new Date(y.Timestamp).getTime() - new Date(x.Timestamp).getTime()
-      )?.[0];
-      const ConcurrentStreams = metricsManipulation?.[1]?.["Datapoints"].sort(
-        (x, y) =>
-          new Date(y.Timestamp).getTime() - new Date(x.Timestamp).getTime()
-      )?.[0];
+      // const ConcurrentViews = metricsManipulation?.[0]?.["Datapoints"].sort(
+      //   (x, y) =>
+      //     new Date(y.Timestamp).getTime() - new Date(x.Timestamp).getTime()
+      // )?.[0];
+      // const ConcurrentStreams = metricsManipulation?.[1]?.["Datapoints"].sort(
+      //   (x, y) =>
+      //     new Date(y.Timestamp).getTime() - new Date(x.Timestamp).getTime()
+      // )?.[0];
 
-      console.log("", ConcurrentStreams);
-      if (metricsManipulation) {
-        metricsManipulation[0]["Datapoints"] = [ConcurrentViews];
-        metricsManipulation[1]["Datapoints"] = [ConcurrentStreams];
-      }
+      // console.log("", ConcurrentStreams);
+      // if (metricsManipulation) {
+      //   metricsManipulation[0]["Datapoints"] = [ConcurrentViews];
+      //   metricsManipulation[1]["Datapoints"] = [ConcurrentStreams];
+      // }
       return metricsManipulation;
     });
-
-    const concurrentStreams = computed(
-      () => accountStore.metrics.ConcurrentStreams
-    );
 
     const quotasProvisioned = computed(
       () => accountStore.accountQuotas[ivsRegion]
@@ -231,16 +235,19 @@ export default defineComponent({
 
     return {
       metrics,
+      concurrentViews,
       concurrentStreams,
       quotasProvisioned,
       accountStore,
       quotasLowLatency,
       quotasStages,
       columns,
+      ivsRegion,
       initialPagination: commonStore.initialPagination,
     };
   },
 
+  // eslint-disable-next-line vue/no-unused-components
   components: { ChartUsageMetrics },
 });
 </script>

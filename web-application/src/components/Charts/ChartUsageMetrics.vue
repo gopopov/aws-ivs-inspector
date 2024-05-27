@@ -111,13 +111,13 @@ export default defineComponent({
 
     const manipulateMetrics = () => {
       option.value.xAxis.data = metrics
-        .sort(
+        ?.sort(
           (x, y) =>
             new Date(x.Timestamp).getTime() - new Date(y.Timestamp).getTime()
         )
         .map((data) => date.formatDate(data.Timestamp, "hh:mm:ss"));
 
-      option.value.series.data = metrics.map((data) => data.Average);
+      option.value.series.data = metrics?.map((data) => data.Sum);
       option.value.yAxis.min = Math.min(...option.value.series.data);
       option.value.yAxis.max = Math.max(...option.value.series.data);
     };
