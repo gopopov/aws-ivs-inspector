@@ -140,7 +140,25 @@ export default defineComponent({
     const $route = useRoute();
     const ivsRegion = $route.params.region;
 
-    const metrics = computed(() => accountStore.metrics[ivsRegion]);
+    const metrics = computed(() => {
+      var metricsManipulation = accountStore.metrics[ivsRegion];
+      console.log(metricsManipulation);
+      const ConcurrentViews = metricsManipulation?.[0]?.["Datapoints"].sort(
+        (x, y) =>
+          new Date(y.Timestamp).getTime() - new Date(x.Timestamp).getTime()
+      )?.[0];
+      const ConcurrentStreams = metricsManipulation?.[1]?.["Datapoints"].sort(
+        (x, y) =>
+          new Date(y.Timestamp).getTime() - new Date(x.Timestamp).getTime()
+      )?.[0];
+
+      console.log("", ConcurrentStreams);
+      if (metricsManipulation) {
+        metricsManipulation[0]["Datapoints"] = [ConcurrentViews];
+        metricsManipulation[1]["Datapoints"] = [ConcurrentStreams];
+      }
+      return metricsManipulation;
+    });
 
     const concurrentStreams = computed(
       () => accountStore.metrics.ConcurrentStreams

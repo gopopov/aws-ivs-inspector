@@ -39,7 +39,7 @@ def lambda_handler(event, context):
                 MetricName=metric["name"],
                 StartTime=datetime.now() - timedelta(hours=24),
                 EndTime=datetime.now(),
-                Period=60,
+                Period=300,
                 Statistics=metric["statistics"],
                 Unit=metric["unit"],
             )

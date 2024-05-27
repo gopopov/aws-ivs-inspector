@@ -57,7 +57,6 @@
             <q-table
               class="col"
               grid
-              bordered
               hide-header
               :rows="Object.values(channels)"
               :columns="columns"
