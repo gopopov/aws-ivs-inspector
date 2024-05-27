@@ -13,7 +13,7 @@
               {{ metric.Label }}
             </q-item-label>
             <q-item-label caption class="text-primary">
-              {{ metric.Datapoints[0].Unit }} - 24hrs
+              {{ metric.Datapoints[0]?.Unit }} - 24hrs
             </q-item-label>
           </div>
 
