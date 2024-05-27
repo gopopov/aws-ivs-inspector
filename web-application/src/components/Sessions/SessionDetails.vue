@@ -6,8 +6,6 @@
         :thumb-style="thumbStyle"
       >
         <div class="col">
-          <!-- <div class="row q-col-gutter-md text-h6"> -->
-
           <q-item dense class="q-pa-md text-h6">
             <q-item-section class="col-12 col-sm">
               <q-item-label> Session: {{ sessionState }} </q-item-label>
@@ -186,7 +184,7 @@
 </template>
 
 <script>
-import { defineComponent, computed, onMounted, ref } from "vue";
+import { defineComponent, computed, onMounted, ref, watch } from "vue";
 import { useRoute } from "vue-router";
 import { useSessionStore } from "src/stores/store-session";
 import { useCommonStore } from "src/stores/store-common";
@@ -263,6 +261,15 @@ export default defineComponent({
 
     const metricsLoaded = ref(false);
 
+    watch(sessionDetails, (currentValue, oldValue) => {
+      console.log("currentValue:", currentValue);
+      console.log("oldValue:", oldValue);
+      if (currentValue) {
+        console.log("session is live");
+        sessionStore.getStream(sessionId, channelArn, awsRegion);
+      }
+    });
+
     onMounted(() => {
       if (!sessionDetails.value) {
         console.log("sessionId:", sessionId);
@@ -276,11 +283,16 @@ export default defineComponent({
             .getSession(sessionId, channelArn, awsRegion)
             .then((res) => {
               console.log("getSessionRes:", res);
-              // if (res) {
-              if (res && sessionDetails.value.events?.["Stream End"]) {
-                console.log("getting live stream data");
-                sessionStore.getStream(sessionId, channelArn, awsRegion);
-              }
+              // console.log(sessionDetails.value);
+              // console.log(Object.values(sessionDetails.value));
+              // const isSessionLive = computed(() =>
+              //   Object.values(sessionDetails.value.events)
+              // );
+              // console.log(isSessionLive.value);
+              // if (res && !sessionDetails.value.events?.["Stream End"]) {
+              //   console.log("getting live stream data");
+              //   sessionStore.getStream(sessionId, channelArn, awsRegion);
+              // }
             });
         }
         if (!sessionMetrics.value) {

@@ -1384,7 +1384,7 @@ export const useAccountStore = defineStore("AccountStore", {
       try {
         console.log(ivsRegion);
         const response = await api.get(
-          `https://${apis.rest}.execute-api.${ivsRegion}.amazonaws.com/ivs/get-statistics`,
+          `https://${apis.rest}.execute-api.${ivsRegion}.amazonaws.com/ivs/get-metrics`,
           {
             params: {
               regionName: ivsRegion,

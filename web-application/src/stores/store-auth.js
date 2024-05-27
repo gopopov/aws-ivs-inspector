@@ -81,12 +81,9 @@ export const useAuthStore = defineStore("AuthStore", {
     async userSignIn(payload) {
       // console.log( "user cred", payload);
 
-      // signOut().then(async (res) => {
-      //   console.log(res);
-
       try {
         const signInResponse = await signIn({
-          username: "testuser",
+          username: payload.email,
           password: payload.password,
         });
 
@@ -105,18 +102,7 @@ export const useAuthStore = defineStore("AuthStore", {
                 },
               }
             );
-
-            // this.router.push({
-            //   name: "Dashboard",
-            //   params: {
-            //     account_id: "740024244647",
-            //     region: ivsRegions.value[0],
-            //   },
-            // });
           });
-
-          // this.currentSession();
-          // fetchAuthSession().then((res) => console.log(res));
         }
 
         return true;
@@ -124,31 +110,6 @@ export const useAuthStore = defineStore("AuthStore", {
         console.log("error signing in", error);
       }
 
-      // (await fetchAuthSession()).credentials();
-
-      // getCurrentUser().then((res) => console.log(res));
-
-      // confirmSignIn({ input: payload.email }).then((res) => console.log(res));
-
-      // (await autoSignIn()).isSignedIn();
-
-      // try {
-      //   const res = await signIn({
-      //     email: payload.email,
-      //     password: payload.password,
-      //   });
-      //   // res.attributes.status = "loggedIn";
-      //   console.log("sign-in attributes: ", res);
-      //   this.user = res.attributes;
-      //   return true;
-      // } catch (error) {
-      //   console.log("error: ", error);
-      //   if (error == "The user is not authenticated") {
-      //     this.router.push("/login");
-      //     dispatch("clearUserState");
-      //   }
-      //   return error;
-      // }
       return true;
     },
 

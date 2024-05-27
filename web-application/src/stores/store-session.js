@@ -199,7 +199,7 @@ export const useSessionStore = defineStore("SessionStore", {
           `wss://${apis.get_session_events}.execute-api.${ivsRegion}.amazonaws.com/ivs`
         );
         ws.onopen = () => {
-          console.log("open response:", ws);
+          // console.log("open response:", ws);
           const data = {
             action: "get-session-events",
             message: {
@@ -208,12 +208,12 @@ export const useSessionStore = defineStore("SessionStore", {
             },
           };
           const payload = JSON.stringify(data);
-          console.log("payload to send:", payload);
+          // console.log("payload to send:", payload);
           ws.send(payload);
 
           ws.onmessage = (event) => {
             const events = JSON.parse(event.data);
-            console.log("event data:", events);
+            // console.log("event data:", events);
             if (!events.ResponseMetadata && Object.keys(events)) {
               if (!this.sessions[ivsRegion]) {
                 this.sessions[ivsRegion] = {};
@@ -222,6 +222,15 @@ export const useSessionStore = defineStore("SessionStore", {
                 this.sessions[ivsRegion][streamId] = {};
               }
               this.sessions[ivsRegion][streamId].events = events;
+
+              if (
+                !Object.values(events).filter(
+                  (event) => event.name == "Stream End"
+                ).length
+              ) {
+                console.log("isLive");
+                this.sessions[ivsRegion][streamId].isLive = true;
+              }
             }
           };
         };

@@ -12,7 +12,7 @@
 
 2.) Create an S3 bucket in your AWS account to store the Terraform-generated state file and add the bucket name in GitHub secrets and bucket region in variables. Please refer the table at #6.
 
-3.) GitHub Permissions: Generate the GitHub personal token under user profile https://github.com/settings/tokens
+3.) GitHub Permissions: Generate the GitHub personal token (Tokens (classic)) under user profile https://github.com/settings/tokens
 
 ![01-PersonalAccessToken-using-Classic.png](documentation/screenshots/01-PersonalAccessToken-using-Classic.png)
 

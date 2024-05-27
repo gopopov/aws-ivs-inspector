@@ -1,63 +1,31 @@
 <template>
   <div class="col q-gutter-sm body-spacing">
     <div class="col">
+      <!-- {{ metrics?.[0] }} -->
       <div class="row q-gutter-sm col-12 col-md">
-        <div class="column col box-decorator">
-          <div class="col-auto q-pa-md text-h6">
-            <q-item-label class="text-body1"> Live Streams </q-item-label>
-            <q-item-label caption> current </q-item-label>
-          </div>
-
-          <div class="col q-py-lg text-center">
-            <q-item-label class="value-text"> 100+ </q-item-label>
-          </div>
-        </div>
-
-        <div class="column col box-decorator">
-          <div class="col-auto q-pa-md text-h6">
-            <q-item-label class="text-body1"> Concurrent Views </q-item-label>
-            <q-item-label caption> current </q-item-label>
-          </div>
-
-          <div class="col q-py-lg text-center">
-            <q-item-label class="value-text text-negative">
-              14233
-            </q-item-label>
-          </div>
-        </div>
-
-        <div class="column col box-decorator">
+        <div
+          v-for="(metric, index) in metrics"
+          :key="index"
+          class="column col box-decorator"
+        >
           <div class="col-auto q-pa-md text-h6">
             <q-item-label class="text-body1">
-              Live Delivered Time
+              {{ metric.Label }}
             </q-item-label>
-            <q-item-label caption> May 2024 </q-item-label>
+            <q-item-label caption class="text-primary">
+              {{ metric.Datapoints[0].Unit }} - 24hrs
+            </q-item-label>
           </div>
 
           <div class="col q-py-lg text-center">
-            <q-item-label class="value-text" lines="1"> 17868 </q-item-label>
-          </div>
-        </div>
-
-        <div class="column col box-decorator">
-          <div class="col-auto q-pa-md text-h6">
-            <q-item-label class="text-body1"> Live Input Time </q-item-label>
-            <q-item-label caption> May 2024 </q-item-label>
-          </div>
-
-          <div class="col q-py-lg text-center">
-            <q-item-label class="value-text"> 30 </q-item-label>
-          </div>
-        </div>
-
-        <div class="column col box-decorator">
-          <div class="col-auto q-pa-md text-h6">
-            <q-item-label class="text-body1"> Recorded Time </q-item-label>
-            <q-item-label caption> May 2024 </q-item-label>
-          </div>
-
-          <div class="col q-py-lg text-center">
-            <q-item-label class="value-text"> 22 </q-item-label>
+            <q-item-label class="value-text">
+              {{
+                metric.Datapoints.reduce(
+                  (accumulator, current) => accumulator + current.Sum,
+                  0
+                )
+              }}
+            </q-item-label>
           </div>
         </div>
       </div>
@@ -172,6 +140,8 @@ export default defineComponent({
     const $route = useRoute();
     const ivsRegion = $route.params.region;
 
+    const metrics = computed(() => accountStore.metrics[ivsRegion]);
+
     const concurrentStreams = computed(
       () => accountStore.metrics.ConcurrentStreams
     );
@@ -242,6 +212,7 @@ export default defineComponent({
     });
 
     return {
+      metrics,
       concurrentStreams,
       quotasProvisioned,
       accountStore,

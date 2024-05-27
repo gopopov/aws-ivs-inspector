@@ -73,8 +73,8 @@
           </q-input>
         </div>
 
-        <div class="row justify-between">
-          <div class="col-auto text-grey self-center">
+        <div class="row justify-center">
+          <!-- <div class="col-auto text-grey self-center">
             <q-item
               class="q-px-xs text-body1"
               clickable
@@ -87,7 +87,7 @@
                 {{ passwordReset ? "Login" : "Forgot password?" }}
               </q-item-section>
             </q-item>
-          </div>
+          </div> -->
           <div class="col-auto self-center">
             <q-btn
               v-if="!passwordReset"
@@ -138,8 +138,8 @@ export default defineComponent({
     const passwordReset = ref(false);
     const isPwd = ref(true);
     const formData = ref({
-      email: "sathia.s@hotmail.com",
-      password: "Sath!a007",
+      email: null,
+      password: null,
     });
     const loginForm = ref();
 

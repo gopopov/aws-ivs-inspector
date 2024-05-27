@@ -132,13 +132,12 @@
 </template>
 
 <script>
-import { computed, defineComponent, ref, onMounted, toRefs, watch } from "vue";
+import { computed, defineComponent, ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 import { useAccountStore } from "src/stores/store-account";
 import { useCommonStore } from "src/stores/store-common";
 import { useAuthStore } from "src/stores/store-auth";
-import { useAuthenticator } from "@aws-amplify/ui-vue";
 
 import Navigation from "src/components/HomeComponents/Navigation.vue";
 
@@ -154,7 +153,6 @@ export default defineComponent({
     const accountStore = useAccountStore();
     const commonStore = useCommonStore();
     const user = computed(() => authStore.user);
-    // const { route, signOut, auth } = toRefs(useAuthenticator());
 
     const navigationList = computed(() => [
       {
@@ -225,36 +223,12 @@ export default defineComponent({
         .then((userSignOutRes) => console.log(userSignOutRes));
     };
 
-    watch(user, (current, old) => {
-      console.log("user old:", old);
-      console.log("user current:", current);
-      // if (current == "signIn") {
-      //   $router.push({ name: "Auth", redirect: { name: $route.name } });
-      // }
-    });
-
     onMounted(() => {
       authStore.isUserSignedIn().then((res) => console.log(res));
-
-      // authStore.isUserSignedIn();
-      //   // console.log("user State at auth:", user.value);
-      //   // console.log("user State at store:", authStore.userState);
-      //   if (!authStore.userState) {
-      //     // console.log("user State is null");
-      //     console.log("route:", route);
-      //     console.log("route:", $route);
-      //     // $router.push({
-      //     //   name: "Auth",
-      //     //   redirect: { name: "Dashboard" },
-      //     // });
-      //   }
     });
 
     return {
-      // auth,
       user,
-      // route,
-      // signOut,
       navigation: navigationList,
       miniState: ref(true),
       drawer,
