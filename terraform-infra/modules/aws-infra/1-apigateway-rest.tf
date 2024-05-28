@@ -84,7 +84,7 @@ resource "aws_api_gateway_deployment" "deployment" {
   depends_on = [
     aws_api_gateway_method.method,
     aws_api_gateway_method_response.method_response,
-    aws_api_gateway_method_settings.method_settings,
+    # aws_api_gateway_method_settings.method_settings,
     aws_api_gateway_integration.integration,
     aws_api_gateway_integration_response.integration_response,
     aws_api_gateway_stage.stage,
