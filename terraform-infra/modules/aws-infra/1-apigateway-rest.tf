@@ -72,6 +72,7 @@ resource "aws_api_gateway_method_response" "method_response" {
 # deploy the API
 resource "aws_api_gateway_deployment" "deployment" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
+  stage_name  = var.environment
   triggers = {
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.rest_api.body))
   }
@@ -79,7 +80,6 @@ resource "aws_api_gateway_deployment" "deployment" {
     create_before_destroy = true
   }
   description = "Deployed at ${timestamp()}"
-  # stage_description = "${md5(file("1-apigateway-rest.tf"))}"
 
   depends_on = [
     aws_api_gateway_method.method,
@@ -90,16 +90,16 @@ resource "aws_api_gateway_deployment" "deployment" {
   ]
 }
 
-resource "aws_api_gateway_stage" "stage" {
-  deployment_id = aws_api_gateway_deployment.deployment.id
-  rest_api_id   = aws_api_gateway_rest_api.rest_api.id
-  stage_name    = var.environment
-  depends_on    = [aws_api_gateway_deployment.deployment]
-}
+# resource "aws_api_gateway_stage" "stage" {
+#   deployment_id = aws_api_gateway_deployment.deployment.id
+#   rest_api_id   = aws_api_gateway_rest_api.rest_api.id
+#   stage_name    = var.environment
+#   depends_on    = [aws_api_gateway_deployment.deployment]
+# }
 
 resource "aws_api_gateway_method_settings" "method_settings" {
   rest_api_id = aws_api_gateway_rest_api.rest_api.id
-  stage_name  = aws_api_gateway_stage.stage.stage_name
+  stage_name  = aws_api_gateway_deployment.deployment.stage_name
   method_path = "*/*"
   settings {
     throttling_burst_limit = 4999
