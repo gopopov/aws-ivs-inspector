@@ -23,8 +23,16 @@ def lambda_handler(event, context):
 
     # metrics to collect
     metricsToCollect = [
-        {"name": "ConcurrentViews", "unit": "Count", "statistics": ["Sum"]},
-        {"name": "ConcurrentStreams", "unit": "Count", "statistics": ["Sum"]},
+        {
+            "name": "ConcurrentViews",
+            "unit": "Count",
+            "statistics": ["Average", "Maximum", "Minimum"],
+        },
+        {
+            "name": "ConcurrentStreams",
+            "unit": "Count",
+            "statistics": ["Average", "Maximum", "Minimum"],
+        },
         {"name": "LiveDeliveredTime", "unit": "Seconds", "statistics": ["Sum"]},
         {"name": "LiveInputTime", "unit": "Seconds", "statistics": ["Sum"]},
         {"name": "RecordedTime", "unit": "Seconds", "statistics": ["Sum"]},

@@ -2,9 +2,6 @@ name: 01:AWS Amplify App
 
 on:
   workflow_dispatch
-  # push:
-  #   branches:
-  #     - dev
 
 env:
   TF_VAR_region: ${{ vars.AWS_AMPLIFY_DEPLOYED_REGION }}
