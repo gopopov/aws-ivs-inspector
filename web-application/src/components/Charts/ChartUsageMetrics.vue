@@ -13,7 +13,7 @@ import { defineComponent, onMounted, ref, provide, computed } from "vue";
 import { date } from "quasar";
 import { use } from "echarts/core";
 import { CanvasRenderer } from "echarts/renderers";
-import { BarChart } from "echarts/charts";
+import { BarChart, LineChart } from "echarts/charts";
 import {
   TitleComponent,
   TooltipComponent,
@@ -28,6 +28,7 @@ import VChart, { THEME_KEY } from "vue-echarts";
 use([
   CanvasRenderer,
   BarChart,
+  LineChart,
   GridComponent,
   TitleComponent,
   TooltipComponent,
@@ -101,7 +102,7 @@ export default defineComponent({
 
       series: {
         name: props.label,
-        type: "bar",
+        type: "line",
         stack: "Total",
         data: [],
       },
@@ -117,7 +118,7 @@ export default defineComponent({
         )
         .map((data) => date.formatDate(data.Timestamp, "hh:mm:ss"));
 
-      option.value.series.data = metrics?.map((data) => data.Sum);
+      option.value.series.data = metrics?.map((data) => data.Maximum);
       option.value.yAxis.min = Math.min(...option.value.series.data);
       option.value.yAxis.max = Math.max(...option.value.series.data);
     };

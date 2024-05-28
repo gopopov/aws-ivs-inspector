@@ -21,7 +21,8 @@
             <q-item-label class="value-text">
               {{
                 metric.Datapoints.reduce(
-                  (accumulator, current) => accumulator + current.Sum,
+                  (accumulator, current) =>
+                    accumulator + current.Sum || current.Maximum,
                   0
                 )
               }}
