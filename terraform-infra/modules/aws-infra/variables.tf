@@ -174,10 +174,10 @@ variable "lambdas" {
   }))
 
   default = [
-    # {
-    #   name    = "user-authorizer"
-    #   timeout = 60
-    # },
+    {
+      name    = "user-authorizer"
+      timeout = 60
+    },
     {
       name    = "get-metrics"
       timeout = 120

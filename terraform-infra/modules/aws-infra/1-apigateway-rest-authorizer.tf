@@ -114,18 +114,18 @@ resource "aws_api_gateway_method_settings" "method_settings_authorizer" {
 #   source_code_hash = filebase64sha256("lambda-function.zip")
 # }
 
-# deploy lambda function
-resource "aws_lambda_function" "lambda_function_authorizer" {
-  function_name    = "${var.project_name}-${var.region}-user-authorizer"
-  filename         = "./functions/user-authorizer.zip"
-  runtime          = "python3.9"
-  handler          = "user-authorizer.lambda_handler"
-  timeout          = 30
-  memory_size      = 2048
-  role             = aws_iam_role.iam_role["user-authorizer"].arn
-  source_code_hash = data.archive_file.lambda_archive_file["user-authorizer"].output_base64sha256
+# # deploy lambda function
+# resource "aws_lambda_function" "lambda_function_authorizer" {
+#   function_name    = "${var.project_name}-${var.region}-user-authorizer"
+#   filename         = "./functions/user-authorizer.zip"
+#   runtime          = "python3.9"
+#   handler          = "user-authorizer.lambda_handler"
+#   timeout          = 30
+#   memory_size      = 2048
+#   role             = aws_iam_role.iam_role["user-authorizer"].arn
+#   source_code_hash = data.archive_file.lambda_archive_file["user-authorizer"].output_base64sha256
 
-  depends_on = [
-    aws_iam_role.iam_role,
-  ]
-}
+#   depends_on = [
+#     aws_iam_role.iam_role,
+#   ]
+# }
