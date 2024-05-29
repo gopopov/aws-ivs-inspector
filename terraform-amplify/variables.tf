@@ -212,25 +212,14 @@ variable "cognito_users" {
   description = "Collection of Amazon Cognito Users you wish to create"
   default = {
     Admin : {
-      username         = "keira"
-      given_name       = "Keira"
-      family_name      = "Sathia"
+      username         = "admin"
+      given_name       = "ivs inspector"
+      family_name      = "aws"
       email            = "admin@ivs-inspector.com"
       password         = "123Qwe,./"
       email_verified   = true
       group_membership = ["Admin", "Streamers"]
     },
-
-    # Streamers to create
-    Streamers : {
-      username         = "aurora"
-      given_name       = "Aurora"
-      family_name      = "Sathia"
-      email            = "streamer@ivs-inspector.com"
-      password         = "123Qwe,./"
-      email_verified   = true
-      group_membership = ["Streamers"]
-    }
   }
 }
 
