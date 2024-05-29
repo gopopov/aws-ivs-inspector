@@ -12,6 +12,27 @@ locals {
 
   policies = [
     {
+      name = "api-gateway-auth-invocation"
+      statements = [
+        {
+          effect = "Allow"
+          actions = [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+          ]
+          resources = ["arn:aws:logs:${var.region}:${var.account_id}:log-group:*"]
+        },
+        {
+          effect = "Allow"
+          actions = [
+            "lambda:InvokeFunction"
+          ]
+          resources = [aws_lambda_function.user-authorizer.arn]
+        }
+      ]
+    },
+    {
       name = "get-metrics"
       statements = [
         {
@@ -26,9 +47,7 @@ locals {
         {
           effect = "Allow"
           actions = [
-            # "cloudwatch:GetMetricData",
             "cloudwatch:GetMetricStatistics",
-            # "cloudwatch:ListMetrics",
           ],
 
           resources = ["*"]
@@ -407,8 +426,6 @@ locals {
         }
       ]
     },
-
-
     {
       name = "get-session-events-connect"
       statements = [
@@ -515,64 +532,12 @@ locals {
         }
       ]
     },
-    # {
-    #   name = "get-live-streams"
-    #   statements = [
-    #     {
-    #       effect = "Allow"
-    #       actions = [
-    #         "logs:CreateLogGroup",
-    #         "logs:CreateLogStream",
-    #         "logs:PutLogEvents",
-    #       ]
-    #       resources = ["arn:aws:logs:${var.region}:${var.account_id}:log-group:*"]
-    #     },
-    #     {
-    #       effect = "Allow"
-    #       actions = [
-    #         "dynamodb:GetItem",
-    #         "dynamodb:UpdateItem",
-    #       ],
-    #       resources = [
-    #         "arn:aws:dynamodb:${var.region}:${var.account_id}:table/${var.project_name}-state-events"
-    #       ]
-    #     },
-    #     {
-    #       effect = "Allow"
-    #       actions = [
-    #         "dynamodb:PutItem",
-    #       ],
-    #       resources = [
-    #         "arn:aws:dynamodb:${var.region}:${var.account_id}:table/${var.project_name}-live-stream-session-connection-ids"
-    #       ]
-    #     },
-    #     {
-    #       effect = "Allow"
-    #       actions = [
-    #         "execute-api:Invoke",
-    #         "execute-api:ManageConnections",
-    #       ]
-    #       resources = [
-    #         "arn:aws:execute-api:${var.region}:${var.account_id}:${aws_apigatewayv2_stage.stage.api_id}/${var.environment}/*/*"
-    #       ]
-    #     },
-    #     {
-    #       effect = "Allow"
-    #       actions = [
-    #         "lambda:InvokeFunction",
-    #       ]
-    #       effect    = "Allow"
-    #       resources = ["*"]
-    #     }
-    #   ]
-    # },
   ]
 
   ecs_task_execution_policy = [
     {
       name = "${var.project_name}-${var.region}-ecs-task-execution-policy"
       statements = [
-        # TODO: this statement needs granular permission
         {
           effect = "Allow"
           actions = [
@@ -580,11 +545,11 @@ locals {
             "ecr:GetDownloadUrlForLayer",
             "ecr:BatchGetImage"
           ]
-          # resources = ["*"]
           resources = ["arn:aws:ecr:${var.region}:${data.aws_caller_identity.current.account_id}:repository/*"]
 
         },
 
+        # TODO: this statement needs granular permission
         {
           effect = "Allow"
           actions = [
@@ -594,6 +559,7 @@ locals {
           ]
           resources = ["*"]
         },
+
         # TODO: this statement needs granular permission
         {
           effect = "Allow"
@@ -607,14 +573,7 @@ locals {
         {
           effect = "Allow"
           actions = [
-            # "dynamodb:PutItem",
-            # "dynamodb:DeleteItem",
-            # "dynamodb:GetItem",
-            # "dynamodb:Scan",
-            # "dynamodb:Query",
             "dynamodb:UpdateItem",
-            # "dynamodb:DescribeStream",
-            # "dynamodb:BatchWriteItem"
           ]
           resources = ["arn:aws:dynamodb:${var.region}:${var.account_id}:table/${var.project_name}-ingest-metrics"]
         }

@@ -13,7 +13,7 @@ data "aws_iam_policy_document" "trust_policy" {
   }
 }
 
-# TODO: BUILD Dynamic IAM policies and attach to lambda functions
+# Dynamic IAM policies and attach to lambda functions
 data "aws_iam_policy_document" "service_policy" {
   for_each = { for policy in local.policies : policy.name => policy }
   dynamic "statement" {

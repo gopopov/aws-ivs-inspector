@@ -27,15 +27,32 @@ def lambda_handler(event, context):
             "name": "ConcurrentViews",
             "unit": "Count",
             "statistics": ["Average", "Maximum", "Minimum"],
+            "period": 120,
         },
         {
             "name": "ConcurrentStreams",
             "unit": "Count",
             "statistics": ["Average", "Maximum", "Minimum"],
+            "period": 120,
         },
-        {"name": "LiveDeliveredTime", "unit": "Seconds", "statistics": ["Sum"]},
-        {"name": "LiveInputTime", "unit": "Seconds", "statistics": ["Sum"]},
-        {"name": "RecordedTime", "unit": "Seconds", "statistics": ["Sum"]},
+        {
+            "name": "LiveDeliveredTime",
+            "unit": "Seconds",
+            "statistics": ["Sum"],
+            "period": 300,
+        },
+        {
+            "name": "LiveInputTime",
+            "unit": "Seconds",
+            "statistics": ["Sum"],
+            "period": 300,
+        },
+        {
+            "name": "RecordedTime",
+            "unit": "Seconds",
+            "statistics": ["Sum"],
+            "period": 300,
+        },
     ]
 
     metrics = []
@@ -47,7 +64,7 @@ def lambda_handler(event, context):
                 MetricName=metric["name"],
                 StartTime=datetime.now() - timedelta(hours=24),
                 EndTime=datetime.now(),
-                Period=300,
+                Period=metric["period"],
                 Statistics=metric["statistics"],
                 Unit=metric["unit"],
             )

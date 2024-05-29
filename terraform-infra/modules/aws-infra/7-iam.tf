@@ -19,7 +19,6 @@ resource "aws_iam_policy_attachment" "iam_policy_attachment" {
   policy_arn = aws_iam_policy.iam_policy[each.key].arn
 }
 
-
 resource "aws_iam_role" "iam_role_ecs_task_execution" {
   name               = "${var.project_name}-${var.region}-ecs-task-execution-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_task_trust_policy.json

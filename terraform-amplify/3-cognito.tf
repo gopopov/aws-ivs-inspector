@@ -97,7 +97,6 @@ resource "aws_cognito_user_pool_client" "user_pool_client" {
   supported_identity_providers = ["COGNITO"]
 }
 
-
 # Cognito Identity Pool
 resource "aws_cognito_identity_pool" "identity_pool" {
   identity_pool_name               = var.identity_pool_name
