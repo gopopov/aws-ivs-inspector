@@ -154,7 +154,6 @@ resource "aws_cognito_user" "cognito_users" {
     email          = each.value.email
     given_name     = each.value.given_name
     family_name    = each.value.family_name
-    IAC_PROVIDER   = "Terraform"
     email_verified = true
   }
 }
