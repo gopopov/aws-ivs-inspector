@@ -204,27 +204,30 @@ variable "cognito_users" {
     given_name       = string,
     family_name      = string,
     email            = string,
+    password         = string,
     email_verified   = optional(bool, true),
     group_membership = optional(list(string), ["admin"])
 
   }))
   description = "Collection of Amazon Cognito Users you wish to create"
   default = {
-    Keira : {
+    Admin : {
       username         = "keira"
       given_name       = "Keira"
       family_name      = "Sathia"
-      email            = "keira@gmail.com"
+      email            = "admin@ivs-inspector.com"
+      password         = "123Qwe,./"
       email_verified   = true
       group_membership = ["Admin", "Streamers"]
     },
 
     # Streamers to create
-    Aurora : {
+    Streamers : {
       username         = "aurora"
       given_name       = "Aurora"
       family_name      = "Sathia"
-      email            = "aurora@gmail.com"
+      email            = "streamer@@ivs-inspector.com"
+      password         = "123Qwe,./"
       email_verified   = true
       group_membership = ["Streamers"]
     }
