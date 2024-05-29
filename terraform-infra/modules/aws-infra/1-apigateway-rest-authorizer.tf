@@ -2,7 +2,7 @@
 resource "aws_api_gateway_authorizer" "authorizer" {
   name                   = "${var.project_name}-request-authorizer"
   rest_api_id            = aws_api_gateway_rest_api.rest_api_authorizer.id
-  authorizer_uri         = aws_lambda_function.lambda_function_authorizer.invoke_arn
+  authorizer_uri         = aws_lambda_function.lambda_function["user-authorizer"].invoke_arn
   authorizer_credentials = aws_iam_role.iam_role["api-gateway-auth-invocation"].arn
 }
 
@@ -38,10 +38,10 @@ resource "aws_api_gateway_integration" "integration_authorizer" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   timeout_milliseconds    = 29000
-  uri                     = aws_lambda_function.lambda_function_authorizer.invoke_arn
+  uri                     = aws_lambda_function.lambda_function["user-authorizer"].invoke_arn
   depends_on = [
     aws_api_gateway_method.method_authorizer,
-    aws_lambda_function.lambda_function_authorizer
+    aws_lambda_function.lambda_function
   ]
 }
 
@@ -89,7 +89,7 @@ resource "aws_api_gateway_deployment" "deployment_authorizer" {
     aws_api_gateway_method_response.method_response_authorizer,
     aws_api_gateway_integration.integration_authorizer,
     aws_api_gateway_integration_response.integration_response_authorizer,
-    aws_lambda_function.lambda_function_authorizer,
+    aws_lambda_function.lambda_function,
   ]
 }
 
