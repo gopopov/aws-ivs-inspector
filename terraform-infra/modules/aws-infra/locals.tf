@@ -28,7 +28,7 @@ locals {
           actions = [
             "lambda:InvokeFunction"
           ]
-          resources = [aws_lambda_function.lambda_function_authorizer.arn]
+          resources = [aws_lambda_function.lambda_function["user-authorizer"].arn]
         }
       ]
     },
