@@ -19,7 +19,7 @@ resource "aws_api_gateway_rest_api" "rest_api_authorizer" {
 resource "aws_api_gateway_resource" "resource_authorizer" {
   rest_api_id = aws_api_gateway_rest_api.rest_api_authorizer.id
   parent_id   = aws_api_gateway_rest_api.rest_api_authorizer.root_resource_id
-  path_part   = "/"
+  path_part   = "user-authorizer"
 }
 
 # create method
