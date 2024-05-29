@@ -27,6 +27,7 @@ export const useAccountStore = defineStore("AccountStore", {
           {
             params: {
               regionName: ivsRegion,
+              authorizationToken: "myAuthTokenFromCognito",
             },
           }
         );
