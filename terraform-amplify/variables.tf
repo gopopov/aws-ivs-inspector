@@ -64,7 +64,7 @@ variable "identity_pool_name" {
 
 variable "identity_pool_allow_unauthenticated_identites" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "identity_pool_allow_classic_flow" {
