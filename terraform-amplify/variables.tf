@@ -60,17 +60,19 @@ variable "identity_pool_name" {
   type        = string
   default     = "identity_pool"
   description = "The name of the Cognito Identity Pool created"
-
 }
+
 variable "identity_pool_allow_unauthenticated_identites" {
   type    = bool
-  default = false
+  default = true
 }
+
 variable "identity_pool_allow_classic_flow" {
   type    = bool
   default = false
 
 }
+
 variable "email_verification_message" {
   type        = string
   default     = <<-EOF
@@ -81,6 +83,7 @@ variable "email_verification_message" {
   EOF
   description = "The Cognito email verification message"
 }
+
 variable "email_verification_subject" {
   type        = string
   default     = "IVS Inspector Verification"
@@ -171,6 +174,7 @@ variable "string_schemas" {
     },
   ]
 }
+
 # Schema (number)
 variable "number_schemas" {
   description = "A container with the number schema attributes of a user pool. Maximum of 50 attributes"
@@ -197,6 +201,7 @@ variable "cognito_groups" {
   }
 
 }
+
 # Users
 variable "cognito_users" {
   type = map(object({

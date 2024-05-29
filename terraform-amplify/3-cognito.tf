@@ -27,7 +27,6 @@ resource "aws_cognito_user_pool" "user_pool" {
     require_uppercase = true
   }
 
-
   # General Schema
   dynamic "schema" {
     for_each = var.schemas == null ? [] : var.schemas
