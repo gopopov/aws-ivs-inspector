@@ -1,7 +1,9 @@
 name: 02:AWS Infra
 
-on: workflow_dispatch
-
+on: # workflow_dispatch
+  push:
+    branches:
+      - main
 env:
   TF_VAR_region: "ap-northeast-1"
   TF_VAR_project_name: ${{ vars.IVS_PROJECT_NAME }}

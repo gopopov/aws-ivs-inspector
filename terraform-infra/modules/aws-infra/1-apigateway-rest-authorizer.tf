@@ -118,7 +118,8 @@ resource "aws_api_gateway_method_settings" "method_settings_authorizer" {
 resource "aws_lambda_function" "lambda_function_authorizer" {
   function_name    = "${var.project_name}-${var.region}-user-authorizer"
   filename         = "./functions/user-authorizer.zip"
-  handler          = "exports.user-authorizer"
+  runtime          = "python3.9"
+  handler          = "user-authorizer.lambda_handler"
   timeout          = 30
   memory_size      = 2048
   role             = aws_iam_role.iam_role["user-authorizer"].arn
