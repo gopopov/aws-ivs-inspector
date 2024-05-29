@@ -1,4 +1,4 @@
-# TODO - Add descriptions to all Roles, and Policies
+# TODO: - Add descriptions to all Roles, and Policies
 # --- TRUST RELATIONSHIPS ---
 # Cognito Trust Relationship (AuthRole)
 data "aws_iam_policy_document" "cognito_authrole_trust_relationship" {
