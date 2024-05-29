@@ -226,7 +226,7 @@ variable "cognito_users" {
       username         = "aurora"
       given_name       = "Aurora"
       family_name      = "Sathia"
-      email            = "streamer@@ivs-inspector.com"
+      email            = "streamer@ivs-inspector.com"
       password         = "123Qwe,./"
       email_verified   = true
       group_membership = ["Streamers"]
